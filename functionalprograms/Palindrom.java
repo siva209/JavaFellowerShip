@@ -16,6 +16,7 @@ public class Palindrom {
 			
 			while(number>0) {
 				remainder=number%10;
+				System.out.println(remainder);
 				total=(total*10)+remainder;
 				number=number/10;
 				
