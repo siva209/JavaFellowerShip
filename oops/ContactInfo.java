@@ -96,6 +96,3 @@ public class ContactInfo {
 		Email = email;
 	}
 }
-
-
-

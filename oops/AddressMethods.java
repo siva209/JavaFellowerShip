@@ -1,18 +1,38 @@
 package com.oops;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
+
 
 public class AddressMethods implements Iaddressbookmethods {
-	ArrayList<ContactInfo>addressBook=new ArrayList<>();
 
 	
+    ArrayList<ContactInfo>addressBook=new ArrayList<>();
+    FileOperations file=new FileOperations();
+
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void add() {
 			ContactInfo address = new ContactInfo();
 			addressBook.add(address);
+			file.addContactToFile(address);
+
 		}
 
 	public List<ContactInfo> getAddressBook()
@@ -45,6 +65,7 @@ public class AddressMethods implements Iaddressbookmethods {
 		String name = scanner.nextLine();
 		System.out.println("Enter the detail you have to edit");
 		while (true) {
+			
 			System.out.println("Press 1 : Address");
 			System.out.println("Press 2 : City");
 			System.out.println("Press 3 : State");
@@ -98,7 +119,10 @@ public class AddressMethods implements Iaddressbookmethods {
 			default:
 				System.out.println("Please Enter Correct Option");
 			}
+			file.writeToFile(addressBook);
 		}
+		
+	
 	}
 
 	@Override
@@ -106,10 +130,16 @@ public class AddressMethods implements Iaddressbookmethods {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter the Name whose data to delete");
 		String name = scanner.nextLine();
-		for (ContactInfo iterator : addressBook) {
-			if (iterator.getFirst_Name().equalsIgnoreCase(name))
-				addressBook.remove(iterator);
-
+		JSONArray arr=file.readJsonFile();
+		for(int i=0;i<arr.size();i++)
+		{
+			JSONObject jo=(JSONObject) arr.get(i);
+			if(name.equalsIgnoreCase(jo.get("FirstName").toString()))
+			{
+				arr.remove(i);
+				file.writeToFile(arr);
+				break;
+			}
 		}
 	}
 	
@@ -145,6 +175,7 @@ public class AddressMethods implements Iaddressbookmethods {
 				if (sortedName.equals(iterator.getFirst_Name()))
 					sortedAddressBook.add(iterator);
 			}
+			
 		}
 
 		Show(sortedAddressBook);
@@ -211,17 +242,5 @@ public class AddressMethods implements Iaddressbookmethods {
 
 		Show(sortedAddressBook);
 	}
-	}
-		
-		
-	
 
-
-
-
-
-
-	
-	
-
-	
+}
